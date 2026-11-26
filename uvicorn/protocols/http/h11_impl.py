@@ -171,7 +171,7 @@ class H11Protocol(asyncio.Protocol):
     def data_received(self, data: bytes) -> None:
         self._unset_keepalive_if_required()
 
-                # Late data can still arrive after the connection closed: closing the
+        # Late data can still arrive after the connection closed: closing the
         # transport is graceful, so the event loop may deliver another
         # `data_received` afterwards. h11 raises LocalProtocolError if we feed
         # it then, so drop the bytes instead.
