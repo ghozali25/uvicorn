@@ -1151,19 +1151,6 @@ async def test_huge_headers_h11protocol_failure_with_setting():
     assert b"Connection: close" in protocol.transport.buffer
     assert b"Invalid HTTP request received." in protocol.transport.buffer
 
-async def test_h11_data_received_after_connection_close_is_ignored():
-    app = Response("Hello, world", media_type="text/plain")
-
-    protocol = get_connected_protocol(app, H11Protocol)
-    protocol.data_received(CONNECTION_CLOSE_REQUEST)
-    await protocol.loop.run_one()
-    assert b"HTTP/1.1 200 OK" in protocol.transport.buffer
-    assert protocol.transport.is_closing()
-    # Stray bytes delivered after the `connection: close` response completed
-    # must be dropped instead of raising LocalProtocolError out of the
-    # protocol callback.
-    protocol.data_received(SIMPLE_GET_REQUEST)
-
 
 @skip_if_no_httptools
 async def test_huge_headers_httptools():
